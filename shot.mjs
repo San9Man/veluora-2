@@ -1,0 +1,27 @@
+import { chromium } from 'playwright';
+const browser = await chromium.launch();
+const page = await browser.newPage({ viewport: { width: 1440, height: 1000 }, deviceScaleFactor: 1 });
+await page.goto('http://localhost:4173/', { waitUntil: 'networkidle' });
+await page.waitForTimeout(1500);
+await page.screenshot({ path: '/tmp/hero.png' });
+await page.evaluate(() => document.getElementById('collections')?.scrollIntoView());
+await page.waitForTimeout(600);
+await page.screenshot({ path: '/tmp/collections.png' });
+await page.evaluate(() => document.getElementById('menu')?.scrollIntoView());
+await page.waitForTimeout(600);
+await page.screenshot({ path: '/tmp/menu.png' });
+await page.evaluate(() => document.getElementById('gifting')?.scrollIntoView());
+await page.waitForTimeout(600);
+await page.screenshot({ path: '/tmp/gifting.png' });
+// studio
+await page.getByRole('button', { name: 'Instagram Kit' }).first().click();
+await page.waitForTimeout(2500);
+await page.screenshot({ path: '/tmp/studio.png', fullPage: false });
+const mobile = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
+await mobile.goto('http://localhost:4173/', { waitUntil: 'networkidle' });
+await mobile.waitForTimeout(1200);
+await mobile.screenshot({ path: '/tmp/mobile.png' });
+const consoleErrors = [];
+page.on('console', msg => { if (msg.type() === 'error') consoleErrors.push(msg.text()); });
+console.log('errors', consoleErrors);
+await browser.close();
